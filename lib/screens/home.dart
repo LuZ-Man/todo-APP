@@ -12,18 +12,19 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final todoList = ToDo.todoList();
-  List<ToDo> _foundTodos = [];
+  // final todoList = ToDo.todoList();
+  // List<ToDo> _foundTodos = [];
 
   final _todoController = TextEditingController();
   var _selectedDate;
+  // late Future<List<ToDo>> futureTasks;
   late Future<List<ToDo>> futureTasks;
 
   @override
   void initState() {
     // _foundTodos = todoList;
     super.initState();
-    futureTasks = ToDo.todoList();
+    futureTasks = todoList();
   }
 
   @override
@@ -49,17 +50,35 @@ class _HomeState extends State<Home> {
                                 fontSize: 30, fontWeight: FontWeight.w500),
                           ),
                         ),
-                        for (ToDo todo in _foundTodos.reversed)
-                          ToDoItem(
-                            todo: todo,
-                            onTodoChanged: _handleTodoChange,
-                            onDeleteItem: _deleteTodoItem,
-                          )
+                        // for (ToDo todo in _foundTodos.reversed)
+                        //   ToDoItem(
+                        //     todo: todo,
+                        //     onTodoChanged: _handleTodoChange,
+                        //     onDeleteItem: _deleteTodoItem,
+                        //   )
+
+                        FutureBuilder<List<ToDo>>(
+                            future: futureTasks, builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            final todos = snapshot
+                                .data!; // This is your actual list
+                            // Loop through the list and access the title of each item
+                            for (final todo in todos) {
+                              print(todo.title);
+                              return Text(todo.title);
+                              // ToDoItem(
+                              //   todo: todo,
+                              //   onTodoChanged: _handleTodoChange,
+                              //   // onDeleteItem: _deleteTodoItem
+                              // );
+                            }} else if (snapshot.hasError) {
+                            return Text('${snapshot.error}');
+                          }
+                          return const Text("LOADING...");
+                        })
                       ],
                     ),
                   ),
-
-
                 ],
               )),
           Align(
@@ -145,7 +164,7 @@ class _HomeState extends State<Home> {
     _todoController.clear();
   }
 
-  void _runFilter(String enteredKeyword) async{
+  void _runFilter(String enteredKeyword) async {
     // List<ToDo> results = [];
     // if (enteredKeyword.isEmpty) {
     //   results =await todoList;
@@ -163,16 +182,16 @@ class _HomeState extends State<Home> {
     // Await the future to get the actual list
     final results = await todoList;
 
-    if (enteredKeyword.isEmpty) {
-      _foundTodos = results;
-    } else {
-      _foundTodos = results
-          .where((item) =>
-          item.title.toLowerCase().contains(enteredKeyword.toLowerCase()))
-          .toList();
-    }
-
-    setState(() {});
+    // if (enteredKeyword.isEmpty) {
+    //   futureTasks = results as Future<ToDo>;
+    // } else {
+    //   futureTasks = results
+    //       .where((item) =>
+    //           item.title.toLowerCase().contains(enteredKeyword.toLowerCase()))
+    //       .toList();
+    // }
+    //
+    // setState(() {});
   }
 
   Widget _buildListView(List<ToDo> todos) {

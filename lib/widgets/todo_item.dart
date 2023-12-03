@@ -11,7 +11,7 @@ class ToDoItem extends StatelessWidget {
       {super.key,
       required this.todo,
       required this.onTodoChanged,
-      required this.onDeleteItem});
+       this.onDeleteItem});
 
   @override
   Widget build(BuildContext context) {
